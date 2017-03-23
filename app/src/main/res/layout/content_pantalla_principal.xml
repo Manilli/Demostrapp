@@ -8,28 +8,34 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.johnjairo.demostrapp.PantallaPrincipal"
     tools:showIn="@layout/app_bar_pantalla_principal">
+
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="495dp"
-        android:orientation="vertical">
+        android:layout_width="310dp"
+
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="8dp">
+
         <TextView
             android:id="@+id/text_sistema_actual"
-            android:layout_width="368dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/str_sistema_actual"
+            android:textAlignment="center"
             android:textColor="@color/primary_text"
             android:textSize="30sp"
             tools:textStyle="italic" />
 
         <TextView
-            android:layout_marginTop="100dp"
             android:id="@+id/text_nuevo_teorema"
-            android:layout_width="368dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="100dp"
             android:text="@string/str_crear_teorema"
+            android:textAlignment="center"
             android:textColor="@color/secondary_text"
-            android:textSize="20sp"
-            android:textAlignment="center"/>
+            android:textSize="20sp" />
 
         <Button
             android:id="@+id/btn_comenzar"
@@ -38,14 +44,14 @@
             android:text="@string/str_comenzar" />
 
         <TextView
-            android:layout_marginTop="30dp"
             android:id="@+id/text_continuar_teorema"
-            android:layout_width="368dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
             android:text="@string/str_continuar_teorema"
+            android:textAlignment="center"
             android:textColor="@color/secondary_text"
-            android:textSize="20sp"
-            android:textAlignment="center"/>
+            android:textSize="20sp" />
 
         <Spinner
             android:id="@+id/spn_continuar_teorema"
@@ -53,14 +59,14 @@
             android:layout_height="wrap_content" />
 
         <TextView
-            android:layout_marginTop="30dp"
             android:id="@+id/text_revisar_teorema"
-            android:layout_width="368dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
             android:text="@string/str_revisar_teorema"
+            android:textAlignment="center"
             android:textColor="@color/secondary_text"
-            android:textSize="20sp"
-            android:textAlignment="center"/>
+            android:textSize="20sp" />
 
         <Spinner
             android:id="@+id/spn_revisar_teorema"
