@@ -4,9 +4,9 @@
     <string name="title_activity_nuevoteorema">Nueva Demostración</string>
 
     <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password (optional)</string>
-    <string name="action_sign_in">Sign in or register</string>
+    <string name="prompt_email">e-mail</string>
+    <string name="prompt_password">Contraseña</string>
+    <string name="action_sign_in">Ingresar</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
@@ -29,4 +29,40 @@
     <string name="str_continuar_teorema">Continuar teorema</string>
     <string name="str_revisar_teorema">Revisar teorema</string>
     <string name="str_comenzar">Comenzar</string>
+    <string name="str_añadir">Añadir</string>
+    <string name="str_fijar">Fijar</string>
+    <string name="str_validar">Validar</string>
+    <string name="str_negacion">¬</string>
+    <string name="str_abre_parentesis">(</string>
+    <string name="str_cierra_parentesis">)</string>
+    <string name="str_condicional">→</string>
+    <string name="str_bicondicional">↔</string>
+    <string name="str_conjuncion">∨</string>
+    <string name="str_disyuncion">∧</string>
+    <string name="str_comprobarDemos">Comprobar Demostración</string>
+
+
+    <string-array name="justificacion_array">
+        <item>Premisa</item>
+        <item>Sustitución</item>
+        <item>Modus Ponems</item>
+        <item>Supuesto</item>
+        <item>Axioma 1</item>
+        <item>Axioma 2</item>
+        <item>Axioma 3</item>
+        <item>Axioma 4</item>
+        <item>Teorema 1</item>
+        <item>Teorema P2</item>
+        <item>Teorema P3</item>
+        <item>Teorema P4a</item>
+        <item>Teorema P4b</item>
+        <item>Teorema P4c</item>
+
+    </string-array>
+
+    <string-array name="premisa_conclusion_array">
+        <item>Premisa</item>
+        <item>Conclusión</item>
+    </string-array>
+
 </resources>
