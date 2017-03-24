@@ -1,5 +1,7 @@
 package com.example.johnjairo.demostrapp;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 
 public class PantallaPrincipal extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -40,6 +43,22 @@ public class PantallaPrincipal extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        Button comenzarButton = (Button) findViewById(R.id.btn_comenzar);
+        comenzarButton.setOnClickListener(new View.OnClickListener() {
+            /*
+            @Override
+            public void onClick(View view) {
+                attemptLogin();
+            }
+            */
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(PantallaPrincipal.this, NuevoTeorema.class);
+                startActivity(intent);
+
+            }
+        });
     }
 
     @Override
@@ -100,4 +119,12 @@ public class PantallaPrincipal extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    public void nuevademosbttn(){
+        Intent intent = new Intent(getApplicationContext(), NuevoTeorema.class);
+        startActivity(intent);
+    }
+
+
+
 }

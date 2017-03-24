@@ -6,4 +6,25 @@
     android:layout_height="match_parent"
     tools:context="com.example.johnjairo.demostrapp.NuevoTeorema">
 
+    <TextView
+        android:id="@+id/nuevaDemosTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nueva Demostración"
+        android:textAlignment="center"
+        android:textColor="@color/primary_text"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/nuevaDemostitle2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ingrese Premisa" />
+
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName" />
 </LinearLayout>
