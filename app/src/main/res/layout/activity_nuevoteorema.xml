@@ -68,7 +68,7 @@
                     android:layout_weight="2"
                     android:ems="5"
                     android:hint="Inferencia"
-                    android:inputType="textPersonName"
+                    android:inputType="none"
                     android:textColorLink="@color/primary_light" />
 
                 <Button

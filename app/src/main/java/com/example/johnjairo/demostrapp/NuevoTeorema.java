@@ -14,7 +14,7 @@ import android.widget.ArrayAdapter;
 
 import com.example.johnjairo.demostrapp.logica.FBF;
 
-import static android.R.id.text1;
+
 import static com.example.johnjairo.demostrapp.R.id.editText;
 import static com.example.johnjairo.demostrapp.R.id.editText2;
 import static com.example.johnjairo.demostrapp.R.id.spinner_inferencia;
@@ -46,7 +46,8 @@ public class NuevoTeorema extends AppCompatActivity {
         final EditText textHip = (EditText) findViewById(editText);
         final EditText edit2expresion2 = (EditText) findViewById(editText2);
         final Button añadirButton = (Button) findViewById(R.id.btn_añadir);
-        //textHip.setBackgroundColor(Color.WHITE);
+        edit2expresion2.setKeyListener(null);
+
 
         añadirButton.setOnClickListener(new View.OnClickListener() {
 
@@ -84,7 +85,6 @@ public class NuevoTeorema extends AppCompatActivity {
                             spinner.setEnabled(false);
                             añadirButton.setEnabled(false);
                             textHip.setEnabled(false);
-                            textHip.setBackgroundColor(Color.LTGRAY);
                         }
                     }
                     edit2expresion2.setText(expresion2);
