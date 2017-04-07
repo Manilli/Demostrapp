@@ -88,7 +88,7 @@ public class NuevoTeorema extends AppCompatActivity {
                     edit2expresion2.setText(expresion2);
                     textHip.setText("");
                 } catch (Exception e) {
-                    textHip.setBackgroundColor(Color.RED);
+                    textHip.setBackgroundColor(Color.rgb(255,102,102));
                 }
 
             }
