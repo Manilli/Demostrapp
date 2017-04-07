@@ -25,13 +25,24 @@ import static com.example.johnjairo.demostrapp.R.id.spinner_inferencia;
  */
 
 public class NuevoTeorema extends AppCompatActivity {
+    int Bandera = 0;
+    private EditText textHip;
+    private EditText edit2expresion2;
+    private Button añadirButton;
+    private Spinner spinner;
+    private static final String KEY_TEXT_VALUE = "booleana";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nuevoteorema);
 
+        textHip = (EditText) findViewById(editText);
+        edit2expresion2  = (EditText) findViewById(editText2);
+        añadirButton  = (Button) findViewById(R.id.btn_añadir);
+
         // Esto es para el spinner
-        final Spinner spinner = (Spinner) findViewById(spinner_inferencia);
+        spinner = (Spinner) findViewById(spinner_inferencia);
         ArrayAdapter<CharSequence> inferenciaAdapter = ArrayAdapter.createFromResource(this,
                 R.array.premisa_conclusion_array, android.R.layout.simple_spinner_dropdown_item);
         inferenciaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -43,12 +54,13 @@ public class NuevoTeorema extends AppCompatActivity {
         justificacion_Adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner2.setAdapter(justificacion_Adapter);
 
-        final EditText textHip = (EditText) findViewById(editText);
-        final EditText edit2expresion2 = (EditText) findViewById(editText2);
-        final Button añadirButton = (Button) findViewById(R.id.btn_añadir);
         edit2expresion2.setKeyListener(null);
 
-
+        if (Bandera ==1){
+            spinner.setEnabled(false);
+            añadirButton.setEnabled(false);
+            textHip.setEnabled(false);
+        }
         añadirButton.setOnClickListener(new View.OnClickListener() {
 
             /*
@@ -85,6 +97,7 @@ public class NuevoTeorema extends AppCompatActivity {
                             spinner.setEnabled(false);
                             añadirButton.setEnabled(false);
                             textHip.setEnabled(false);
+                            Bandera = 1;
                         }
                     }
                     edit2expresion2.setText(expresion2);
@@ -99,5 +112,21 @@ public class NuevoTeorema extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        // Read values from the "savedInstanceState"-object and put them in your textview
+        boolean a = savedInstanceState.getBoolean(KEY_TEXT_VALUE);
+        textHip.setEnabled(a);
+        spinner.setEnabled(a);
+        añadirButton.setEnabled(a);
+
+    }
+    @Override
+    protected void onSaveInstanceState (Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(KEY_TEXT_VALUE, textHip.isEnabled());
     }
 }
