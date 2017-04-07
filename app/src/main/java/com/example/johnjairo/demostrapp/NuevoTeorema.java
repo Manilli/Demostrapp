@@ -2,6 +2,7 @@ package com.example.johnjairo.demostrapp;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -45,6 +46,7 @@ public class NuevoTeorema extends AppCompatActivity {
         final EditText textHip = (EditText) findViewById(editText);
         final EditText edit2expresion2 = (EditText) findViewById(editText2);
         final Button añadirButton = (Button) findViewById(R.id.btn_añadir);
+        //textHip.setBackgroundColor(Color.WHITE);
 
         añadirButton.setOnClickListener(new View.OnClickListener() {
 
@@ -87,10 +89,14 @@ public class NuevoTeorema extends AppCompatActivity {
                     }
                     edit2expresion2.setText(expresion2);
                     textHip.setText("");
-                } catch (Exception e) {
-                    textHip.setBackgroundColor(Color.rgb(255,102,102));
-                }
+                    //textHip.setBackgroundColor(Color.WHITE);
+                    textHip.getBackground().setColorFilter(Color.rgb(200,230,201), PorterDuff.Mode.SRC_IN);
 
+
+                } catch (Exception e) {
+                    //textHip.setBackgroundColor(Color.rgb(255,102,102));
+                    textHip.getBackground().setColorFilter(Color.rgb(255,102,102), PorterDuff.Mode.SRC_IN);
+                }
             }
         });
     }

@@ -39,7 +39,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="5"
-                    android:inputType="textPersonName" />
+                    android:inputType="textPersonName"
+                    android:textColorHighlight="@color/primary_light"
+                    android:textColorLink="@color/primary_light" />
 
                 <Spinner
                     android:id="@+id/spinner_inferencia"
@@ -66,7 +68,8 @@
                     android:layout_weight="2"
                     android:ems="5"
                     android:hint="Inferencia"
-                    android:inputType="textPersonName" />
+                    android:inputType="textPersonName"
+                    android:textColorLink="@color/primary_light" />
 
                 <Button
                     android:id="@+id/btn_fijar"
