@@ -2,18 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
+    android:id="@+id/nd"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.example.johnjairo.demostrapp.NuevoTeorema">
 
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/scrollView"
         android:layout_gravity="right">
 
         <LinearLayout
+            android:id="@+id/nd_mainlayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -35,7 +37,7 @@
                 android:padding="5dp">
 
                 <EditText
-                    android:id="@+id/editText"
+                    android:id="@+id/editText_hipotesis"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="5"
@@ -62,7 +64,7 @@
                 android:padding="5dp">
 
                 <EditText
-                    android:id="@+id/editText2"
+                    android:id="@+id/editText_inferencia"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
@@ -75,13 +77,14 @@
                     android:id="@+id/btn_fijar"
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
-                    android:text="@string/str_fijar"
-                    android:textAlignment="center"
                     android:layout_alignParentBottom="true"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:text="@string/str_fijar"
+                    android:textAlignment="center" />
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/nd_layout_justificacion"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
@@ -92,11 +95,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Justificaciòn"
-                    android:textSize="18sp"/>
+                    android:textSize="18sp" />
+
                 <Spinner
-                    android:id="@+id/spiner_justificacion"
+                    android:id="@+id/spinner_justificacion"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content" />
+
                 <ImageButton
                     android:id="@+id/imageButton"
                     android:layout_width="40dp"
@@ -109,7 +114,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
                 android:text="@string/str_validar"
-                android:textAlignment="center"/>
+                android:textAlignment="center" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -122,14 +127,14 @@
                     android:layout_width="30dp"
                     android:layout_height="wrap_content"
                     android:text="@string/str_abre_parentesis"
-                    android:textAlignment="center"/>
+                    android:textAlignment="center" />
 
                 <Button
                     android:id="@+id/btn_cierra_parentesis"
                     android:layout_width="30dp"
                     android:layout_height="fill_parent"
                     android:text="@string/str_cierra_parentesis"
-                    android:textAlignment="center"/>
+                    android:textAlignment="center" />
 
                 <Button
                     android:id="@+id/btn_condicional"
@@ -152,32 +157,33 @@
                     android:layout_width="40dp"
                     android:layout_height="fill_parent"
                     android:text="@string/str_bicondicional"
-                    android:textAlignment="center"/>
+                    android:textAlignment="center" />
+
+                <Button
+                    android:id="@+id/btn_disyuncion"
+                    android:layout_width="30dp"
+                    android:layout_height="fill_parent"
+                    android:text="@string/str_conjuncion"
+                    android:textAlignment="center" />
 
                 <Button
                     android:id="@+id/btn_conjuncion"
                     android:layout_width="30dp"
                     android:layout_height="fill_parent"
-                    android:text="@string/str_conjuncion"
-                    android:textAlignment="center"/>
-                <Button
-                    android:id="@+id/btn_disyuncion"
-                    android:layout_width="30dp"
-                    android:layout_height="fill_parent"
                     android:text="@string/str_disyuncion"
-                    android:textAlignment="center"/>
+                    android:textAlignment="center" />
 
             </LinearLayout>
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/textView_expresion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Expresión"
-                android:textSize="18sp"/>
+                android:textSize="18sp" />
 
             <EditText
-                android:id="@+id/editText3"
+                android:id="@+id/editText_expresion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"
@@ -187,12 +193,12 @@
                 android:id="@+id/Tabla"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:stretchColumns="1" >
+                android:stretchColumns="1">
 
                 <TableRow
                     android:id="@+id/Cabecera"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content" >
+                    android:layout_height="wrap_content">
 
                     <TextView
                         android:id="@+id/pasoColumna"
@@ -228,21 +234,20 @@
                 <TableRow
                     android:id="@+id/SeparadorCabecera"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content" >
+                    android:layout_height="wrap_content">
 
                     <FrameLayout
                         android:id="@+id/LineaCabecera"
                         android:layout_width="fill_parent"
                         android:layout_height="2px"
                         android:layout_span="6"
-                        android:background="#FFFFFF" >
-                    </FrameLayout>
+                        android:background="#FFFFFF"></FrameLayout>
                 </TableRow>
 
                 <TableRow
                     android:id="@+id/Fila1"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content" >
+                    android:layout_height="wrap_content">
 
                     <TextView
                         android:id="@+id/Anio1"
@@ -277,7 +282,6 @@
                 android:text="@string/str_comprobarDemos"
 
                 />
-
 
 
         </LinearLayout>

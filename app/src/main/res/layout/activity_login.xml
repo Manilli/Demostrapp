@@ -11,13 +11,7 @@
     tools:context="com.example.johnjairo.demostrapp.LoginActivity">
 
     <!-- Login progress -->
-    <ImageView
-        android:id="@+id/logo_udea"
-        android:layout_height="100dp"
-        android:layout_width="match_parent"
-        android:src="@drawable/img_logo_udea">
 
-    </ImageView>
     <ProgressBar
         android:id="@+id/login_progress"
         style="?android:attr/progressBarStyleLarge"
@@ -36,6 +30,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/logo_udea"
+                android:layout_height="150dp"
+                android:layout_width="match_parent"
+                android:src="@drawable/img_mind">
+
+            </ImageView>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
