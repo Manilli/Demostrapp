@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nd"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+
     tools:context="com.example.johnjairo.demostrapp.NuevoTeorema">
 
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="right">
+        android:layout_gravity="right"
+        android:layout_below="@+id/relativeLayout"
+        android:layout_alignParentStart="true">
 
         <LinearLayout
             android:id="@+id/nd_mainlayout"
@@ -30,97 +33,112 @@
                 android:textColor="@color/primary_text"
                 android:textSize="24sp" />
 
+            <TextView
+                android:id="@+id/textView_premisas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Premisas"
+                android:textSize="18sp" />
+
+
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:id="@+id/layout_ContenedorPremisas"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:padding="5dp">
+                android:orientation="vertical">
+
+
+                <RelativeLayout
+                    android:id="@+id/layout_Premisas"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <EditText
+                        android:id="@+id/editText_hipotesis"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ems="6"
+                        android:inputType="textPersonName"
+                        android:textColorHighlight="@color/primary_light"
+                        android:textColorLink="@color/primary_light"></EditText>
+
+                    <Button
+                        android:id="@+id/btn_eliminarHip"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginStart="120dp"
+                        android:layout_toEndOf="@+id/editText_hipotesis"
+                        android:padding="0dp"
+                        android:text="@string/str_eliminar"
+                        android:textColor="@color/red"
+                        android:textSize="30sp"
+                        android:visibility="visible" />
+
+
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/btn_añadir"
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/str_añadir"
+                    android:textColor="@color/primary"
+                    android:textSize="24sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_Conclusion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView_conclusion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Conclusión"
+                    android:textSize="18sp" />
 
                 <EditText
-                    android:id="@+id/editText_hipotesis"
+                    android:id="@+id/editText_conclusion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:ems="5"
+                    android:elevation="2dp"
+                    android:ems="6"
                     android:inputType="textPersonName"
                     android:textColorHighlight="@color/primary_light"
                     android:textColorLink="@color/primary_light" />
+                <!--android:background="@drawable/edittext_rounded_corners"-->
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="5dp"
+                android:visibility="gone">
 
                 <Spinner
                     android:id="@+id/spinner_inferencia"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
-                <Button
-                    android:id="@+id/btn_añadir"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/str_añadir" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:padding="5dp">
-
-                <EditText
-                    android:id="@+id/editText_inferencia"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:ems="5"
-                    android:hint="Inferencia"
-                    android:inputType="none"
-                    android:textColorLink="@color/primary_light" />
-
-                <Button
-                    android:id="@+id/btn_fijar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    android:layout_alignParentBottom="true"
-                    android:layout_weight="1"
-                    android:text="@string/str_fijar"
-                    android:textAlignment="center" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/nd_layout_justificacion"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:padding="5dp">
-
-                <TextView
-                    android:id="@+id/textView3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Justificaciòn"
-                    android:textSize="18sp" />
-
-                <Spinner
-                    android:id="@+id/spinner_justificacion"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-                <ImageButton
-                    android:id="@+id/imageButton"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    app:srcCompat="@drawable/ic_nuevo_sistema" />
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/btn_validar"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:text="@string/str_validar"
-                android:textAlignment="center" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:padding="5dp">
+                android:padding="5dp"
+                android:visibility="visible">
 
                 <Button
                     android:id="@+id/btn_abre_parentesis"
@@ -174,6 +192,66 @@
                     android:textAlignment="center" />
 
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:padding="5dp">
+
+                <EditText
+                    android:id="@+id/editText_inferencia"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:ems="5"
+                    android:hint="Inferencia"
+                    android:inputType="none"
+                    android:textColorLink="@color/primary_light"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/btn_fijar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_alignParentBottom="true"
+                    android:layout_weight="1"
+                    android:text="@string/str_fijar"
+                    android:textAlignment="center" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/nd_layout_justificacion"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Justificaciòn"
+                    android:textSize="18sp" />
+
+                <Spinner
+                    android:id="@+id/spinner_justificacion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <ImageButton
+                    android:id="@+id/imageButton"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    app:srcCompat="@drawable/ic_nuevo_sistema" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_validar"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:text="@string/str_validar"
+                android:textAlignment="center" />
 
             <TextView
                 android:id="@+id/textView_expresion"
@@ -282,8 +360,22 @@
                 android:text="@string/str_comprobarDemos"
 
                 />
-
-
         </LinearLayout>
     </ScrollView>
-</LinearLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/relativeLayout">
+
+        <android.inputmethodservice.KeyboardView
+            android:id="@+id/keyboardview"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+</RelativeLayout>

@@ -29,8 +29,9 @@
     <string name="str_continuar_teorema">Continuar teorema</string>
     <string name="str_revisar_teorema">Revisar teorema</string>
     <string name="str_comenzar">Comenzar</string>
-    <string name="str_añadir">Añadir</string>
-    <string name="str_fijar">Fijar</string>
+    <string name="str_añadir">+</string>
+    <string name="str_eliminar">O</string>
+    <string name="str_fijar">Comenzar Demostración</string>
     <string name="str_validar">Validar</string>
     <string name="str_negacion">¬</string>
     <string name="str_abre_parentesis">(</string>
