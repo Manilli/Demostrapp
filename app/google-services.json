@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "514603764346",
+    "firebase_url": "https://demostrapp-4403d.firebaseio.com",
+    "project_id": "demostrapp-4403d",
+    "storage_bucket": "demostrapp-4403d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:514603764346:android:f3cd8072aaecf89b",
+        "android_client_info": {
+          "package_name": "com.example.johnjairo.demostrapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "514603764346-ip160i5oahgt418rt3legcahqlfm8k1m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.johnjairo.demostrapp",
+            "certificate_hash": "1c113b5f7b76a806ea1afe783ab8a42316777714"
+          }
+        },
+        {
+          "client_id": "514603764346-cea1po53k5pv9d70o2qjev4keeq36hor.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAczknaXIaHbs6Y8kjVwGoGa_aWAP0kpWY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "514603764346-cea1po53k5pv9d70o2qjev4keeq36hor.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

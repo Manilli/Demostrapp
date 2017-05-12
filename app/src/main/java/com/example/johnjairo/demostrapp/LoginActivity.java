@@ -3,23 +3,22 @@ package com.example.johnjairo.demostrapp;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
-
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -29,6 +28,14 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,10 +65,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private UserLoginTask mAuthTask = null;
 
     // UI references.
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private Button registerButton;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +82,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
-
+        FirebaseApp.initializeApp(this);
+        mAuth = FirebaseAuth.getInstance();
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -83,26 +96,70 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user!= null) {
+                    Intent intent=new Intent(LoginActivity.this, PantallaPrincipal.class);
+                    startActivity(intent);
+                }
+            }
+        };
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
-            /*
             @Override
             public void onClick(View view) {
-                attemptLogin();
-            }
-            */
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), PantallaPrincipal.class);
-                startActivity(intent);
+                startSignIn();
 
             }
         });
+        registerButton=(Button)findViewById(R.id.email_register_button);
+        registerButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                crearCuenta();
 
+            }
+        });
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+        FirebaseUser usuarioActual = mAuth.getCurrentUser();
+    }
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }
+
+
+    private void startSignIn(){
+        String email=mEmailView.getText().toString();
+        String password=mPasswordView.getText().toString();
+        if(TextUtils.isEmpty(email)||TextUtils.isEmpty(password)){
+            Toast.makeText(LoginActivity.this,"Hay campos vacios",Toast.LENGTH_SHORT).show();
+        }
+        else{
+            mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if(!task.isSuccessful()){
+                        Toast.makeText(LoginActivity.this,"Hay un error con el usuario o la contraseña",Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+
+
+    }
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {
             return;
@@ -110,7 +167,31 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         getLoaderManager().initLoader(0, null, this);
     }
+    public void crearCuenta(){
+        String correo=mEmailView.getText().toString();
+        String clave=mPasswordView.getText().toString();
+        if(correo.equals("") || clave.equals("")){
+            Toast.makeText(LoginActivity.this, "Error al crear cuenta, por favor llene todos los campos", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
+        mAuth.createUserWithEmailAndPassword(correo, clave)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        //Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
+                        Toast.makeText(LoginActivity.this, "¡Registro realizado correctamente!", Toast.LENGTH_SHORT).show();
+
+                        // Si falla el registro, mostrar mensaje al usuario.
+                        // Si es correcto, el listener para el estado de la autenticación será notificado
+                        // y la lógica para manejar el usuario se puede realizar mediante el listener.
+                        if (!task.isSuccessful()) {
+                            Toast.makeText(LoginActivity.this, "Hubo un error al crear la cuenta\n\n" + "Lo sentimos",Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                });
+    }
     private boolean mayRequestContacts() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return true;
@@ -120,7 +201,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
         if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
             Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
+                    .setAction(android.R.string.ok, new OnClickListener() {
                         @Override
                         @TargetApi(Build.VERSION_CODES.M)
                         public void onClick(View v) {

@@ -15,6 +15,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 public class PantallaPrincipal extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -98,24 +101,23 @@ public class PantallaPrincipal extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-         /*
-        if (id == R.id.nav_camera) {
 
+        if (id == R.id.nav_nuevo_sistema) {
+            Intent intent=new Intent(PantallaPrincipal.this,NuevoTeorema.class);
+            startActivity(intent);
             // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_sistemas) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_ajustes) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_logout) {
 
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+            FirebaseAuth mAuth= FirebaseAuth.getInstance();
+            mAuth.signOut();
+            //finish();
         }
-        */
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.nav_view);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
