@@ -72,8 +72,7 @@
                             android:ems="8"
                             android:inputType="textPersonName"
                             android:textColorHighlight="@color/primary_light"
-                            android:textColorLink="@color/primary_light"
-                            android:tag="premisa"></EditText>
+                            android:textColorLink="@color/primary_light"></EditText>
 
                         <Button
                             android:id="@+id/btn_eliminarHip"
@@ -103,7 +102,6 @@
                         android:text="@string/str_añadir"
                         android:textColor="@color/primary"
                         android:textSize="24sp" />
-
                 </LinearLayout>
 
                 <LinearLayout
@@ -254,10 +252,10 @@
                 android:padding="5dp">
 
                 <TextView
-                    android:id="@+id/textView3"
+                    android:id="@+id/textView_justificacion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Justificaciòn"
+                    android:text="Justificación"
                     android:textSize="18sp" />
 
                 <LinearLayout
@@ -317,7 +315,7 @@
                         <Spinner
                             android:id="@+id/spinner_paso1"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"/>
 
                     </LinearLayout>
 
@@ -405,98 +403,71 @@
                 android:visibility="visible">
             </LinearLayout>
 
-            <Button
-                android:id="@+id/btn_validar"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:text="@string/str_validar"
-                android:textAlignment="center" />
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
 
-            <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/Tabla"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:stretchColumns="1">
+                <Button
+                    android:id="@+id/btn_validar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:text="@string/str_añadir"
+                    android:textColor="@color/primary"
+                    android:textSize="30sp"
+                    android:textAlignment="center" />
+                <Button
+                    android:id="@+id/btn_cancelarPaso"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:padding="0dp"
+                    android:text="@string/str_eliminar"
+                    android:textColor="@color/red"
+                    android:textSize="40sp"
+                    android:visibility="visible" />
 
-                <TableRow
-                    android:id="@+id/Cabecera"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/pasoColumna"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:text="Paso"
-                        android:textColor="#005500"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:id="@+id/aValidarColumna"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:padding="5px"
-                        android:text="Propos. a validar"
-                        android:textColor="#005500"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:id="@+id/justificacionColumna"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="5px"
-                        android:text="Justificaciòn"
-                        android:textColor="#005500"
-                        android:textSize="18sp" />
+            </RelativeLayout>
 
 
-                </TableRow>
+            <GridView
+                android:id="@+id/gv_demos"
+                android:layout_width="fill_parent"
+                android:layout_height="130dp"
+                android:background="#c8e6c9"
+                android:numColumns="3" />
 
-                <TableRow
-                    android:id="@+id/SeparadorCabecera"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content">
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" >
 
-                    <FrameLayout
-                        android:id="@+id/LineaCabecera"
-                        android:layout_width="fill_parent"
-                        android:layout_height="2px"
-                        android:layout_span="6"
-                        android:background="#FFFFFF"></FrameLayout>
-                </TableRow>
 
-                <TableRow
-                    android:id="@+id/Fila1"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content">
+                <Button
+                    android:id="@+id/btn_añadirPaso"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:text="@string/str_añadir"
+                    android:textColor="@color/primary"
+                    android:textSize="30sp" />
 
-                    <TextView
-                        android:id="@+id/Anio1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="-"
-                        android:textSize="20sp" />
 
-                    <TextView
-                        android:id="@+id/Cuidad1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="-"
-                        android:textSize="20sp" />
+                <Button
+                    android:id="@+id/btn_eliminarPaso"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:padding="0dp"
+                    android:text="@string/str_eliminar"
+                    android:textColor="@color/red"
+                    android:textSize="40sp"
+                    android:visibility="visible" />
 
-                    <TextView
-                        android:id="@+id/Oro1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="-"
-                        android:textSize="20sp" />
-                </TableRow>
-            </TableLayout>
+            </RelativeLayout>
 
             <Button
                 android:id="@+id/btn_comprobarDemos"

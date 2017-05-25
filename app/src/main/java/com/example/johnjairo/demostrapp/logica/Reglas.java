@@ -112,7 +112,7 @@ public class Reglas {
             return true;
         }
         
-        if(Objects.equals(regla.getOperador(), expresion.getOperador()) &&
+        if(equals(regla.getOperador(), expresion.getOperador()) &&
                 compararArboles(regla.getFbfD(), expresion.getFbfD()) &&
                 compararArboles(regla.getFbfI(), expresion.getFbfI()) ){
             return true;
@@ -169,6 +169,9 @@ public class Reglas {
         
         return true;
         
+    }
+    public static boolean equals(Object a, Object b) {
+        return (a == b) || (a != null && a.equals(b));
     }
     
 }

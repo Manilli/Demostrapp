@@ -17,7 +17,7 @@
  * documentation would be appreciated but is not required.
  */
 
-package com.example.johnjairo.demostrapp;
+package com.example.johnjairo.demostrapp.vista;
 
         import android.app.Activity;
         import android.app.AlertDialog;
