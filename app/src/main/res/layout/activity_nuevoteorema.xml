@@ -1,0 +1,497 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nd"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+
+    tools:context="com.example.johnjairo.demostrapp.NuevoTeorema">
+
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="right"
+        android:layout_below="@+id/relativeLayout"
+        android:layout_alignParentStart="true">
+
+        <LinearLayout
+            android:id="@+id/nd_mainlayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/nuevaDemosTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textAlignment="center"
+                android:textColor="@color/primary_text"
+                android:textSize="24sp">
+                <!--android:maxLines="1"
+                android:ellipsize="marquee"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:scrollHorizontally="true"--></TextView>
+
+            <LinearLayout
+                android:id="@+id/layout_inferencia"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">>
+
+                <LinearLayout
+                    android:id="@+id/layout_ContenedorPremisas"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:id="@+id/textView_premisas"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Premisas"
+                        android:textSize="18sp" />
+
+                    <RelativeLayout
+                        android:id="@+id/layout_Premisas"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <EditText
+                            android:id="@+id/editText_hipotesis"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ems="8"
+                            android:inputType="textPersonName"
+                            android:textColorHighlight="@color/primary_light"
+                            android:textColorLink="@color/primary_light"></EditText>
+
+                        <Button
+                            android:id="@+id/btn_eliminarHip"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginStart="240dp"
+                            android:layout_toEndOf="@+id/editText_hipotesis"
+                            android:padding="0dp"
+                            android:text="@string/str_eliminar"
+                            android:textColor="@color/red"
+                            android:textSize="30sp"
+                            android:visibility="visible" />
+
+
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:id="@+id/btn_añadir"
+                        android:layout_width="60dp"
+                        android:layout_height="match_parent"
+                        android:text="@string/str_añadir"
+                        android:textColor="@color/primary"
+                        android:textSize="24sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_Conclusion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textView_conclusion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Conclusión"
+                        android:textSize="18sp" />
+
+                    <EditText
+                        android:id="@+id/editText_conclusion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:elevation="2dp"
+                        android:ems="6"
+                        android:inputType="textPersonName"
+                        android:textColorHighlight="@color/primary_light"
+                        android:textColorLink="@color/primary_light"
+                        android:tag="conclusion"/>
+                    <!--android:background="@drawable/edittext_rounded_corners"-->
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="5dp"
+                android:visibility="gone">
+
+                <Spinner
+                    android:id="@+id/spinner_inferencia"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_operadores"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:padding="5dp"
+                android:visibility="visible">
+
+                <Button
+                    android:id="@+id/btn_abre_parentesis"
+                    android:layout_width="30dp"
+                    android:layout_height="fill_parent"
+                    android:padding="0dp"
+                    android:text="@string/str_abre_parentesis"
+                    android:textAlignment="center" />
+
+                <Button
+                    android:id="@+id/btn_cierra_parentesis"
+                    android:layout_width="30dp"
+                    android:layout_height="fill_parent"
+                    android:padding="0dp"
+                    android:text="@string/str_cierra_parentesis"
+                    android:textAlignment="center" />
+
+                <Button
+                    android:id="@+id/btn_condicional"
+                    android:layout_width="40dp"
+                    android:layout_height="fill_parent"
+                    android:padding="0dp"
+                    android:text="@string/str_condicional"
+                    android:textAlignment="center"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/btn_negacion"
+                    android:layout_width="35dp"
+                    android:layout_height="fill_parent"
+                    android:padding="0dp"
+                    android:text="@string/str_negacion"
+                    android:textAlignment="center"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/btn_bicondicional"
+                    android:layout_width="40dp"
+                    android:layout_height="fill_parent"
+                    android:padding="0dp"
+                    android:text="@string/str_bicondicional"
+                    android:textAlignment="center"
+                    android:textColor="@color/primary_text" />
+
+                <Button
+                    android:id="@+id/btn_disyuncion"
+                    android:layout_width="30dp"
+                    android:layout_height="fill_parent"
+                    android:padding="0dp"
+                    android:text="@string/str_conjuncion"
+                    android:textAlignment="center" />
+
+                <Button
+                    android:id="@+id/btn_conjuncion"
+                    android:layout_width="30dp"
+                    android:layout_height="fill_parent"
+                    android:padding="0dp"
+                    android:text="@string/str_disyuncion"
+                    android:textAlignment="center" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="5dp">
+
+                <EditText
+                    android:id="@+id/editText_inferencia"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:ems="5"
+                    android:hint="Inferencia"
+                    android:inputType="none"
+                    android:textColorLink="@color/primary_light"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/btn_fijar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_alignParentBottom="true"
+                    android:layout_weight="1"
+                    android:text="@string/str_fijar"
+                    android:textAlignment="center" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/nd_layout_justificacion"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/textView_justificacion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Justificación"
+                    android:textSize="18sp" />
+
+                <LinearLayout
+                    android:id="@+id/layout_bicondicional"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:id="@+id/textView_bicondicional"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Lado Bicondicional"
+                        android:textSize="18sp" />
+
+                    <Spinner
+                        android:id="@+id/spinner_bicondicional"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <Spinner
+                        android:id="@+id/spinner_justificacion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <LinearLayout
+                        android:id="@+id/nd_layout_justificacion_spinners"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="5dp">
+
+                        <Spinner
+                            android:id="@+id/spinner_premisas"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                        <Spinner
+                            android:id="@+id/spinner_reglaSusti"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                        <Spinner
+                            android:id="@+id/spinner_paso"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                        <Spinner
+                            android:id="@+id/spinner_paso1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                    </LinearLayout>
+
+                    <ImageButton
+                        android:id="@+id/infoButton"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        app:srcCompat="@drawable/ic_nuevo_sistema" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView_sust1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="A sustituir"
+                        android:textSize="18sp" />
+
+                    <EditText
+                        android:id="@+id/editText_sust1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ems="8"
+                        android:inputType="textPersonName" />
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/textView_sust2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Por"
+                        android:textSize="18sp" />
+
+                    <EditText
+                        android:id="@+id/editText_sust2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginLeft="55dp"
+                        android:layout_toEndOf="@+id/textView_sust2"
+                        android:ems="8"
+                        android:inputType="textPersonName" />
+
+                </RelativeLayout>
+
+                <Button
+                    android:id="@+id/btn_sustituir"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="OK"
+                    android:textAlignment="center" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textView_expresion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Expresión"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/editText_expresion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName" />
+
+            <LinearLayout
+                android:id="@+id/layout_operadoresJusti"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:padding="5dp"
+                android:visibility="visible">
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <Button
+                    android:id="@+id/btn_validar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:text="@string/str_añadir"
+                    android:textColor="@color/primary"
+                    android:textSize="30sp"
+                    android:textAlignment="center" />
+                <Button
+                    android:id="@+id/btn_cancelarPaso"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:padding="0dp"
+                    android:text="@string/str_eliminar"
+                    android:textColor="@color/red"
+                    android:textSize="40sp"
+                    android:visibility="visible" />
+
+            </RelativeLayout>
+
+
+            <GridView
+                android:id="@+id/gv_demos"
+                android:layout_width="fill_parent"
+                android:layout_height="130dp"
+                android:background="#c8e6c9"
+                android:numColumns="3" />
+
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" >
+
+
+                <Button
+                    android:id="@+id/btn_añadirPaso"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:text="@string/str_añadir"
+                    android:textColor="@color/primary"
+                    android:textSize="30sp" />
+
+
+                <Button
+                    android:id="@+id/btn_eliminarPaso"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:padding="0dp"
+                    android:text="@string/str_eliminar"
+                    android:textColor="@color/red"
+                    android:textSize="40sp"
+                    android:visibility="visible" />
+
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/btn_comprobarDemos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/str_comprobarDemos"
+
+                />
+        </LinearLayout>
+    </ScrollView>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/relativeLayout">
+
+        <android.inputmethodservice.KeyboardView
+            android:id="@+id/keyboardview"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+</RelativeLayout>
