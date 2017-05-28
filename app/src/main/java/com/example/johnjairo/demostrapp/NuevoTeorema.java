@@ -82,13 +82,13 @@ public class NuevoTeorema extends AppCompatActivity{
     private TextView textViewNuevaDemosTitle, textViewExpresion, textViewSust1, textViewSust2, textViewBicondicional, textViewJustificacion;
     private TableLayout tablaDemostracion;
     CustomKeyboard customKeyboard;
-    private Integer ic_Size, supuesto, bicondicionalActual=0, pasoDemostracion=0, pasoDemostracion2=0, banderaPremisas = -1, banderaConclusion = -1;
+    private Integer ic_Size, supuesto, bicondicionalActual=0, pasoDemostracion=0, pasoDemostracion2=0, banderaPremisas = 1, banderaConclusion = -1;
     private Axiomas axiomas;
     private Reglas reglas;
     private Hipotesis hipotesis, hipotesis2;
     private boolean esBicondicional;
-    private ArrayList<FBF> antecedentes;
-    private ArrayList<FBF> consecuentes;
+    private ArrayList<FBF> antecedentes = new ArrayList<FBF>();
+    private ArrayList<FBF> consecuentes = new ArrayList<FBF>();
     ArrayList<String> premisasArray = new ArrayList<String>();
     ArrayList<String> pasoArray = new ArrayList<String>();
     ArrayList<String> paso1Array = new ArrayList<String>();
@@ -97,7 +97,12 @@ public class NuevoTeorema extends AppCompatActivity{
     ArrayList<String> justificacionArray = new ArrayList<String>();
     ArrayList<Integer> banderaHipotesis = new ArrayList<>();
     ArrayList<String> pasosGridArray = new ArrayList<>();
+    ArrayList<String> pasos2GridArray = new ArrayList<>();
     ArrayAdapter<String> pasos_Grid_Adapter;
+    ArrayAdapter<String> pasos2_Grid_Adapter;
+    MatrixCursor mcr = new MatrixCursor(columns);
+    MatrixCursor mcrBC = new MatrixCursor(columns);
+    MatrixCursor mcrBC2 = new MatrixCursor(columns);
     GridView gvDemostracion;
 
     static int totalEditTexts = 0;
@@ -166,7 +171,7 @@ public class NuevoTeorema extends AppCompatActivity{
         layoutOperadoresJustificacion = (LinearLayout) findViewById(R.id.layout_operadoresJusti);
         //tablaDemostracion = (TableLayout) findViewById(R.id.Tabla);
         //premisasArray = (ArrayList) getResources().getStringArray(R.array.premisas_array);
-        final MatrixCursor mcr = new MatrixCursor(columns);
+        //final MatrixCursor mcr = new MatrixCursor(columns);
         startManagingCursor(mcr);
 
         // initialize the instance variable customKeyboard
@@ -228,6 +233,7 @@ public class NuevoTeorema extends AppCompatActivity{
                 this));
         paso1Array.clear();
 
+        bicondicionalArray.add("Seleccione");
         // Esto es para el spinnerBicondicional
         ArrayAdapter<String> bicond_Adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, bicondicionalArray);
         bicond_Adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -244,6 +250,9 @@ public class NuevoTeorema extends AppCompatActivity{
 
         pasos_Grid_Adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,pasosGridArray);
         pasos_Grid_Adapter.setDropDownViewResource(R.layout.activity_nuevoteorema);
+
+        pasos2_Grid_Adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,pasos2GridArray);
+        pasos2_Grid_Adapter.setDropDownViewResource(R.layout.activity_nuevoteorema);
 
         //Bloqueamos entrada de texto en la inferencia
         textInf.setKeyListener(null);
@@ -652,8 +661,14 @@ public class NuevoTeorema extends AppCompatActivity{
             @Override
             public void onItemSelected(AdapterView <?> parent, View view, int position,long id) {
                 if (spinnerJustificacion.getSelectedItem().equals("Premisa")){
-                    deshabilitarComponentes(2);
-                    btnInfo.setVisibility(View.GONE);
+                    if (esBicondicional){
+                        Toast.makeText(NuevoTeorema.this, "Recuerde que no hay premisas", Toast.LENGTH_SHORT).show();
+                        spinnerJustificacion.setSelection(0);
+                    }
+                    else {
+                        deshabilitarComponentes(2);
+                        btnInfo.setVisibility(View.GONE);
+                    }
                 } else if(spinnerJustificacion.getSelectedItem().toString().contains("Axioma")){
                     deshabilitarComponentes(3);
                     btnInfo.setVisibility(View.VISIBLE);
@@ -704,6 +719,17 @@ public class NuevoTeorema extends AppCompatActivity{
             }
         });
 
+        spinnerBicondicional.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+            @Override
+            public void onItemSelected(AdapterView <?> parent, View view, int position,long id) {
+                cargarAntecedentes(2);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // TODO Auto-generated method stub
+            }
+        });
+
         btnFijar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -733,8 +759,13 @@ public class NuevoTeorema extends AppCompatActivity{
 
 
                     if (viewsPremisas.size() == 0){
-                        textViewNuevaDemosTitle.setText(" |- " + textConcl.getText().toString());
-                        expresion = "⊢" + textConcl.getText().toString();
+                        if(detectarBiCondicional(textConcl.getText().toString().substring(1))){
+                            textViewNuevaDemosTitle.setText(" |- " + textConcl.getText().toString());
+                            expresion = "⊢" + textConcl.getText().toString();
+                        } else {
+                            Toast.makeText(NuevoTeorema.this, "Hay errores en la expresión.", LENGTH_SHORT).show();
+                            return;
+                        }
                     }
                     else {
                         for (int i=0; i<=viewsPremisas.size(); i++){
@@ -783,21 +814,31 @@ public class NuevoTeorema extends AppCompatActivity{
                     premisasArray.add("Seleccione");
                     textViewNuevaDemosTitle.setText("");
                 }
-                if (banderaPremisas != -1 && banderaConclusion != -1){
+                if ((banderaPremisas != -1) && (banderaConclusion != -1)){
                     deshabilitarComponentes(7);
                     ndMainLayout.removeView(layoutOperadores);
                     layoutOperadoresJustificacion.addView(layoutOperadores);
-                    hipotesis = new Hipotesis(expresion);
                     if (viewsPremisas.size() == 0){
-                        cargarAntecedentes(2);
+                        if(detectarBiCondicional(expresion.substring(1))){
+                            esBicondicional= true;
+                            antecedentesConsecuentes(expresion.substring(1));
+                            cargarDemostracionesBicondicional();
+                            cargarAntecedentes(2);
+                            spinnerBicondicional.setVisibility(View.VISIBLE);
+                            textViewBicondicional.setVisibility(View.VISIBLE);
+                        } else {
+                            //Toast.makeText(NuevoTeorema.this, "Hay errores en la expresión.", LENGTH_SHORT).show();
+                            return;
+                        }
                     }
                     else {
+                        hipotesis = new Hipotesis(expresion);
                         cargarAntecedentes(1);
                     }
                     //Toast.makeText(NuevoTeorema.this, expresion, LENGTH_SHORT).show();
                 }
                 //deshabilitarComponentes(5);
-                }
+            }
         });
 
         btnInfo.setOnClickListener(new View.OnClickListener() {
@@ -887,8 +928,6 @@ public class NuevoTeorema extends AppCompatActivity{
                     return;
                 }
                 try {
-                    if(justificacion.contains("Modus Ponems"))expresion = "a";
-
                     FBF f = new FBF(expresion);
                     boolean v = true;
                     if(spinnerJustificacion.getSelectedItem().toString().contains("Premisa")){
@@ -939,13 +978,13 @@ public class NuevoTeorema extends AppCompatActivity{
                         }
                         //Toast.makeText(NuevoTeorema.this, "Modus Ponems Debug " + expresion1 + " " + expresion2, LENGTH_SHORT).show();
                         String ponem= reglas.modusPonems(expresion1, expresion2);
-                        if(ponem!=null){
-                            expresion= ponem;
+                        if(ponem!=null && ponem.equals(expresion)){
+                            expresion = ponem;
                             justificacion= "Modus Ponems entre "+ paso1 + " y " + paso2;
                         }else {
                             error=true;
                             //JOptionPane.showMessageDialog(this, "No es posible realizar modus ponems entre los pasos seleccionados");
-                            Toast.makeText(NuevoTeorema.this, "No es posible realizar modus ponems entre los pasos seleccionados", LENGTH_SHORT).show();
+                            Toast.makeText(NuevoTeorema.this, "Error al usar Modus Ponems. Revise los pasos o la expresión ingresada", LENGTH_SHORT).show();
                         }
                     } else {
                         String s = comprobarTeorema(spinnerJustificacion.getSelectedItem().toString());
@@ -1070,8 +1109,10 @@ public class NuevoTeorema extends AppCompatActivity{
                 String mensaje = "";
                 if(esBicondicional){
                     //tablaDemostracion.setModel(modelo1);
+                    mcr = mcrBC;
                     if(comprobarDemostracion(mcr, hipotesis.getConse())){
                         //ablaDemostracion.setModel(modelo2);
+                        mcr = mcrBC2;
                         if(comprobarDemostracion(mcr, hipotesis2.getConse())){
                             if(supuesto==1){
                                 //JOptionPane.showMessageDialog(this, "La demostracion se realizo correctamente pero recuerde \n"
@@ -1347,6 +1388,7 @@ public class NuevoTeorema extends AppCompatActivity{
                 spinnerPaso1.setVisibility(View.GONE);
                 spinnerPaso.setVisibility(View.GONE);
                 spinnerBicondicional.setVisibility(View.GONE);
+                textViewBicondicional.setVisibility(View.GONE);
                 textSust1.setVisibility(View.GONE);
                 textSust2.setVisibility(View.GONE);
                 textViewJustificacion.setVisibility(View.GONE);
@@ -1494,7 +1536,6 @@ public class NuevoTeorema extends AppCompatActivity{
                 nd_layout_justificacion.setVisibility(View.VISIBLE);
                 //btnValidar.setVisibility(View.VISIBLE);
                 textViewExpresion.setVisibility(View.VISIBLE);
-                textViewBicondicional.setVisibility(View.GONE);
                 textViewJustificacion.setVisibility(View.VISIBLE);
                 textExpre.setEnabled(true);
                 textExpre.setVisibility(View.VISIBLE);
@@ -1518,7 +1559,6 @@ public class NuevoTeorema extends AppCompatActivity{
                 nd_layout_justificacion.setVisibility(View.GONE);
                 //btnValidar.setVisibility(View.VISIBLE);
                 textViewExpresion.setVisibility(View.GONE);
-                textViewBicondicional.setVisibility(View.GONE);
                 textViewJustificacion.setVisibility(View.GONE);
                 textExpre.setEnabled(true);
                 textExpre.setVisibility(View.GONE);
@@ -1548,12 +1588,16 @@ public class NuevoTeorema extends AppCompatActivity{
             if(spinnerBicondicional.getSelectedItemPosition()==1){
                 antecedentes = hipotesis.getAntecedentes();
                 //tablaDemostracion.setModel(modelo1); hacerlo distinto
+                mcr = mcrBC;
                 bicondicionalActual = 1;
+                gvDemostracion.setAdapter(pasos_Grid_Adapter);
                 agregarPasos(1);
             }else if(spinnerBicondicional.getSelectedItemPosition()==2){
                 antecedentes = hipotesis2.getAntecedentes();
                 //tablaDemostracion.setModel(modelo2); hacerlo distinto
+                mcr = mcrBC2;
                 bicondicionalActual = 2;
+                gvDemostracion.setAdapter(pasos2_Grid_Adapter);
                 agregarPasos(2);
             }else {
                 bicondicionalActual = 0;
@@ -1564,6 +1608,7 @@ public class NuevoTeorema extends AppCompatActivity{
         //comboPremisas.addItem(new String("Seleccione"));
         for (int i = 0; i < antecedentes.size(); i++) {
             premisasArray.add(antecedentes.get(i).toString());
+            Log.i("Premisa", antecedentes.get(i).toString());
         }
     }
 
@@ -1609,9 +1654,7 @@ public class NuevoTeorema extends AppCompatActivity{
             consecuentes.add(new FBF(fbfs[1] + "→" + fbfs[0]));
             consecuentes.add(new FBF(fbfs[0] + "→" + fbfs[1]));
         } catch (Exception ex) {
-            //Logger.getLogger(PantallaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
     public boolean detectarBiCondicional(String expresion){
@@ -1622,13 +1665,12 @@ public class NuevoTeorema extends AppCompatActivity{
     }
 
     private void cargarDemostracionesBicondicional(){
-
         String demostracion;
         demostracion = "⊢" + antecedentes.get(0)+ "→" + antecedentes.get(1);
-        bicondicionalArray.add(demostracion);
+        bicondicionalArray.add("|- " + antecedentes.get(0)+ "→" + antecedentes.get(1));
         hipotesis = new Hipotesis(demostracion);
         demostracion = "⊢" + antecedentes.get(1)+ "→" + antecedentes.get(0);
-        bicondicionalArray.add(demostracion);
+        bicondicionalArray.add("|- " + antecedentes.get(1)+ "→" + antecedentes.get(0));
         hipotesis2 = new Hipotesis(demostracion);
     }
 
@@ -1654,12 +1696,22 @@ public class NuevoTeorema extends AppCompatActivity{
         //DefaultTableModel model = (DefaultTableModel) tablaDemostracion.getModel();
         if(esBicondicional){
             if(bicondicionalActual==1){
+                textExpre.setText("");
                 setPasoDemostracion(getPasoDemostracion()+1);
                 mcr.addRow(new Object[]{pasoDemostracion,expresion , justificacion});
+                pasosGridArray.add(Integer.toString(pasoDemostracion));
+                pasosGridArray.add(expresion);
+                pasosGridArray.add(justificacion);
+                gvDemostracion.setAdapter(pasos_Grid_Adapter);
                 agregarPasos(1);
             }else if(bicondicionalActual==2){
+                textExpre.setText("");
                 pasoDemostracion2+=1;
                 mcr.addRow(new Object[]{pasoDemostracion2,expresion , justificacion});
+                pasos2GridArray.add(Integer.toString(pasoDemostracion));
+                pasos2GridArray.add(expresion);
+                pasos2GridArray.add(justificacion);
+                gvDemostracion.setAdapter(pasos2_Grid_Adapter);
                 agregarPasos(2);
             }
         }else {

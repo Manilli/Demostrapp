@@ -244,6 +244,36 @@
                     android:textAlignment="center" />
             </LinearLayout>
 
+            <RelativeLayout
+                android:id="@+id/layout_bicondicionalT"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/textView_bicondicional"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lado Bicondicional"
+                    android:textSize="18sp"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_bicondicionalS"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp">
+
+                <Spinner
+                    android:id="@+id/spinner_bicondicional"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"/>
+            </RelativeLayout>
+
             <LinearLayout
                 android:id="@+id/nd_layout_justificacion"
                 android:layout_width="wrap_content"
@@ -257,26 +287,6 @@
                     android:layout_height="wrap_content"
                     android:text="Justificación"
                     android:textSize="18sp" />
-
-                <LinearLayout
-                    android:id="@+id/layout_bicondicional"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:padding="5dp">
-
-                    <TextView
-                        android:id="@+id/textView_bicondicional"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Lado Bicondicional"
-                        android:textSize="18sp" />
-
-                    <Spinner
-                        android:id="@+id/spinner_bicondicional"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
