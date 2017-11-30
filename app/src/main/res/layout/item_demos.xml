@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/primary_light">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="100"
+        android:background="@color/primary_light">
+
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="2dp"
+        android:layout_weight="14"
+        android:text="n"
+        android:id="@+id/top_paso"
+        android:textColor="@color/primary_text"/>
+
+    <View style="@style/DividerH"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginStart="4dp"
+        android:layout_weight="42"
+        android:text="p"
+        android:id="@+id/top_expresion"
+        android:textColor="@color/primary_text"/>
+
+    <View style="@style/DividerH"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginStart="4dp"
+        android:layout_weight="44"
+        android:textColor="@color/primary_text"
+        android:text="Justificación"
+        android:id="@+id/top_justificacion"/>
+
+    </LinearLayout>
+
+    <View style="@style/DividerG"/>
+
+</LinearLayout>

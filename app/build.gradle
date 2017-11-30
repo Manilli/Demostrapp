@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "com.example.johnjairo.demostrapp"
         minSdkVersion 17
@@ -32,6 +32,7 @@ dependencies {
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'com.google.firebase:firebase-appindexing:10.0.1'
     compile 'com.google.firebase:firebase-auth:10.0.1'
+    compile 'com.android.support:support-v4:25.3.0'
     testCompile 'junit:junit:4.12'
 }
 apply plugin: 'com.google.gms.google-services'

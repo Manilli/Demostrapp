@@ -1,6 +1,7 @@
 package com.example.johnjairo.demostrapp;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.MatrixCursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,6 +9,8 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Parcelable;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +21,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -26,7 +30,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TableLayout;
@@ -37,11 +43,26 @@ import com.example.johnjairo.demostrapp.logica.Axiomas;
 import com.example.johnjairo.demostrapp.logica.FBF;
 import com.example.johnjairo.demostrapp.logica.Hipotesis;
 import com.example.johnjairo.demostrapp.logica.Reglas;
+import com.example.johnjairo.demostrapp.modelo.AdapterPaso;
+import com.example.johnjairo.demostrapp.modelo.Demostracion;
+import com.example.johnjairo.demostrapp.modelo.Demostration;
+import com.example.johnjairo.demostrapp.modelo.Paso;
 import com.example.johnjairo.demostrapp.vista.CustomKeyboard;
+import com.example.johnjairo.demostrapp.vista.Item_paso;
 import com.example.johnjairo.demostrapp.vista.NothingSelectedSpinnerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.ValueEventListener;
 
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import static android.widget.Toast.LENGTH_SHORT;
 import static com.example.johnjairo.demostrapp.R.id.editText_conclusion;
@@ -77,12 +98,12 @@ public class NuevoTeorema extends AppCompatActivity{
     private static final String KEY_TEXT_VALUE = "booleana";
     private String[] columns = new String[] { "num", "expresion", "justificacion" };
     private LinearLayout ndMainLayout, nd_layout_justificacion, layoutContenedorHip, layoutConclusion, layoutOperadores,
-            layoutOperadoresJustificacion, layoutInferencia;
+            layoutOperadoresJustificacion, layoutInferencia, layoutTituloDemos;
     private RelativeLayout layoutHip;
     private TextView textViewNuevaDemosTitle, textViewExpresion, textViewSust1, textViewSust2, textViewBicondicional, textViewJustificacion;
     private TableLayout tablaDemostracion;
     CustomKeyboard customKeyboard;
-    private Integer ic_Size, supuesto, bicondicionalActual=0, pasoDemostracion=0, pasoDemostracion2=0, banderaPremisas = 1, banderaConclusion = -1;
+    private Integer ic_Size, supuesto, bicondicionalActual=0, pasoDemostracion=0, pasoDemostracion2=0, banderaPremisas = 1, banderaConclusion = -1, banderaSpinnerPremisa = 0;
     private Axiomas axiomas;
     private Reglas reglas;
     private Hipotesis hipotesis, hipotesis2;
@@ -98,12 +119,29 @@ public class NuevoTeorema extends AppCompatActivity{
     ArrayList<Integer> banderaHipotesis = new ArrayList<>();
     ArrayList<String> pasosGridArray = new ArrayList<>();
     ArrayList<String> pasos2GridArray = new ArrayList<>();
+    ArrayList<String> tituloGridArray = new ArrayList<>();
     ArrayAdapter<String> pasos_Grid_Adapter;
     ArrayAdapter<String> pasos2_Grid_Adapter;
+    ArrayAdapter<String> titulo_Grid_Adapter;
+    AdapterPaso pasos_List_Adapter;
+    AdapterPaso pasos2_List_Adapter;
     MatrixCursor mcr = new MatrixCursor(columns);
     MatrixCursor mcrBC = new MatrixCursor(columns);
     MatrixCursor mcrBC2 = new MatrixCursor(columns);
-    GridView gvDemostracion;
+    ArrayList<ArrayList> demostracion1=new ArrayList<>();
+    ArrayList<ArrayList> demostracion2=new ArrayList<>();
+    ArrayList<Item_paso> paso_lv_Array = new ArrayList<Item_paso>();
+    ArrayList<Item_paso> paso2_lv_Array = new ArrayList<Item_paso>();
+    DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+    DatabaseReference mUsuariosReference=mDatabase.child("usuarios");
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    FirebaseUser user=mAuth.getCurrentUser();
+    DatabaseReference mSistemaReference=mDatabase.child("usuarios").child(user.getUid()).child("Sistemas").child("Sistema Formal Proposicional");
+    String strHipotesis1;
+    String strHipotesis2;
+
+    ListView lv;
+    View separador;
 
     static int totalEditTexts = 0;
     @Override
@@ -153,7 +191,8 @@ public class NuevoTeorema extends AppCompatActivity{
         textViewSust2 = (TextView) findViewById(R.id.textView_sust2);
         textViewBicondicional = (TextView) findViewById(R.id.textView_bicondicional);
         textViewJustificacion = (TextView) findViewById(R.id.textView_justificacion);
-        gvDemostracion = (GridView)findViewById(R.id.gv_demos);
+        separador= (View) findViewById(R.id.separador);
+        lv = (ListView) findViewById(R.id.lv_demos);
         spinnerPremisaConclusion = (Spinner) findViewById(spinner_inferencia);
         spinnerJustificacion = (Spinner) findViewById(R.id.spinner_justificacion);
         spinnerBicondicional = (Spinner) findViewById(R.id.spinner_bicondicional);
@@ -169,6 +208,7 @@ public class NuevoTeorema extends AppCompatActivity{
         nd_layout_justificacion = (LinearLayout) findViewById(R.id.nd_layout_justificacion);
         layoutOperadores = (LinearLayout) findViewById(R.id.layout_operadores);
         layoutOperadoresJustificacion = (LinearLayout) findViewById(R.id.layout_operadoresJusti);
+        layoutTituloDemos = (LinearLayout) findViewById(R.id.layout_titulo);
         //tablaDemostracion = (TableLayout) findViewById(R.id.Tabla);
         //premisasArray = (ArrayList) getResources().getStringArray(R.array.premisas_array);
         //final MatrixCursor mcr = new MatrixCursor(columns);
@@ -248,11 +288,34 @@ public class NuevoTeorema extends AppCompatActivity{
         sustitu_Adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerSustitucion.setAdapter(sustitu_Adapter);
 
-        pasos_Grid_Adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,pasosGridArray);
-        pasos_Grid_Adapter.setDropDownViewResource(R.layout.activity_nuevoteorema);
+        pasos_List_Adapter = new AdapterPaso(this, paso_lv_Array);
+        lv.setAdapter(pasos_List_Adapter);
 
-        pasos2_Grid_Adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,pasos2GridArray);
-        pasos2_Grid_Adapter.setDropDownViewResource(R.layout.activity_nuevoteorema);
+        pasos2_List_Adapter = new AdapterPaso(this, paso2_lv_Array);
+        lv.setAdapter(pasos2_List_Adapter);
+
+        lv.setOnTouchListener(new ListView.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                int action = event.getAction();
+                switch (action) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Disallow ScrollView to intercept touch events.
+                        v.getParent().requestDisallowInterceptTouchEvent(true);
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        // Allow ScrollView to intercept touch events.
+                        v.getParent().requestDisallowInterceptTouchEvent(false);
+                        break;
+                }
+
+                // Handle ListView touch events.
+                v.onTouchEvent(event);
+                return true;
+            }
+        });
+
 
         //Bloqueamos entrada de texto en la inferencia
         textInf.setKeyListener(null);
@@ -657,10 +720,13 @@ public class NuevoTeorema extends AppCompatActivity{
             }
         });
 
+
         spinnerJustificacion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
             @Override
             public void onItemSelected(AdapterView <?> parent, View view, int position,long id) {
                 if (spinnerJustificacion.getSelectedItem().equals("Premisa")){
+                    if (banderaSpinnerPremisa == 1) textExpre.setText("");
+                    banderaSpinnerPremisa = 1;
                     if (esBicondicional){
                         Toast.makeText(NuevoTeorema.this, "Recuerde que no hay premisas", Toast.LENGTH_SHORT).show();
                         spinnerJustificacion.setSelection(0);
@@ -670,30 +736,35 @@ public class NuevoTeorema extends AppCompatActivity{
                         btnInfo.setVisibility(View.GONE);
                     }
                 } else if(spinnerJustificacion.getSelectedItem().toString().contains("Axioma")){
+                    if (banderaSpinnerPremisa == 1) textExpre.setText("");
+                    banderaSpinnerPremisa = 0;
                     deshabilitarComponentes(3);
                     btnInfo.setVisibility(View.VISIBLE);
-                    textExpre.setText("");
                 }else if(spinnerJustificacion.getSelectedItem().toString().contains("Sustitución")){
+                    if (banderaSpinnerPremisa == 1) textExpre.setText("");
+                    banderaSpinnerPremisa = 0;
                     deshabilitarComponentes(1);
                     btnInfo.setVisibility(View.VISIBLE);
-                    textExpre.setText("");
                 }else if (spinnerJustificacion.getSelectedItem().equals("Modus Ponems")){
+                    if (banderaSpinnerPremisa == 1) textExpre.setText("");
+                    banderaSpinnerPremisa = 0;
                     deshabilitarComponentes(4);
                     btnInfo.setVisibility(View.VISIBLE);
-                    textExpre.setText("");
                     /*spinnerPaso1.removeAllViews();
                     for(int i=0; i<spinnerPaso.getCount(); i++){
                         spinnerPaso1.addView(spinnerPaso.getChildAt(i));
                     }*/
                 }
                 else if(spinnerJustificacion.getSelectedItem().toString().contains("Supuesto")){
+                    if (banderaSpinnerPremisa == 1) textExpre.setText("");
+                    banderaSpinnerPremisa = 0;
                     deshabilitarComponentes(5);
                     btnInfo.setVisibility(View.GONE);
-                    textExpre.setText("");
                 }else if (spinnerJustificacion.getSelectedItem().equals("Seleccione")){
+                    if (banderaSpinnerPremisa == 1) textExpre.setText("");
+                    banderaSpinnerPremisa = 0;
                     deshabilitarComponentes(3);
                     btnInfo.setVisibility(View.GONE);
-                    textExpre.setText("");
                 }
 
                 else {
@@ -861,17 +932,26 @@ public class NuevoTeorema extends AppCompatActivity{
                         mostrar=true;
                         break;
                     case "Sustitución": if(spinnerSustitucion.getSelectedItem().equals("RFP5")){
-                        mensaje ="Definición de formas proposicionales conjuntivas \n "
+                        mensaje ="REGLA DE FORMACIÓN DE FÓRMULAS RFP5\n"
+                                + "\n"
+                                + "Definición de formas proposicionales conjuntivas \n "
+                                + "\n"
                                 + "Sean r y s fbfs, entonces la fórmula r∧s se \n"
                                 + "considera bien formada y se define como: ¬(¬r∨¬s)";
                         mostrar=true;
                     }else if(spinnerSustitucion.getSelectedItem().equals("RFP6")){
-                        mensaje ="Definición de formas proposicionales condicionales \n "
+                        mensaje ="REGLA DE FORMACIÓN DE FÓRMULAS RFP6\n"
+                                + "\n"
+                                + "Definición de formas proposicionales condicionales \n "
+                                + "\n"
                                 + "Sean r y s fbfs, entonces la fórmula r→s se \n"
                                 + "considera bien formada y se define como: ¬r∨s";
                         mostrar=true;
                     }else if(spinnerSustitucion.getSelectedItem().equals("RFP7")){
-                        mensaje ="Definición de formas proposicionales bicondicionales \n "
+                        mensaje ="REGLA DE FORMACIÓN DE FÓRMULAS RFP7\n"
+                                + "\n"
+                                + "Definición de formas proposicionales bicondicionales \n "
+                                + "\n"
                                 + "Sean r y s fbfs, entonces la fórmula r↔s se \n"
                                 + "considera bien formada y se define como: (r→s)∧(s→r)";
                         mostrar=true;
@@ -916,6 +996,7 @@ public class NuevoTeorema extends AppCompatActivity{
         btnValidar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ArrayList<Integer>pasosRelacionados=new ArrayList<>();
                 boolean error=false;
                 String expresion = textExpre.getText().toString();
                 String justificacion= spinnerJustificacion.getSelectedItem().toString();
@@ -978,9 +1059,14 @@ public class NuevoTeorema extends AppCompatActivity{
                         }
                         //Toast.makeText(NuevoTeorema.this, "Modus Ponems Debug " + expresion1 + " " + expresion2, LENGTH_SHORT).show();
                         String ponem= reglas.modusPonems(expresion1, expresion2);
+                        Log.e("String ponem",ponem);
+                        Log.e("String expresion",expresion);
+                       // Log.e("String resultado reglas",String.valueOf(reglas.compararArboles(new FBF(ponem),new FBF(expresion))));
                         if(ponem!=null && ponem.equals(expresion)){
                             expresion = ponem;
                             justificacion= "Modus Ponems entre "+ paso1 + " y " + paso2;
+                            pasosRelacionados.add(paso1);
+                            pasosRelacionados.add(paso2);
                         }else {
                             error=true;
                             //JOptionPane.showMessageDialog(this, "No es posible realizar modus ponems entre los pasos seleccionados");
@@ -1014,7 +1100,7 @@ public class NuevoTeorema extends AppCompatActivity{
 
                             }*/
 
-                            agregarFBF(mcr, expresion, justificacion);  //Hay que migrar a una solución diferente para manejar la tabla
+                            agregarFBF(mcr, expresion, justificacion,pasosRelacionados);  //Hay que migrar a una solución diferente para manejar la tabla
                             deshabilitarComponentes(7);
                         }else{
                             Bitmap resourceImg = BitmapFactory.decodeResource(getResources(), R.drawable.ic_error);
@@ -1095,7 +1181,7 @@ public class NuevoTeorema extends AppCompatActivity{
                 if(v){
                     expresion= expresion.replace(expresion2, expresion3);
                     //Toast.makeText(NuevoTeorema.this, "Bien!", LENGTH_SHORT).show();
-                    agregarFBF(mcr, expresion,"Sustitucion en el paso: " + paso +  " \n con la regla" + spinnerSustitucion.getSelectedItem());
+                    agregarFBF(mcr, expresion,"Sustitucion en el paso: " + paso +  " \n con la regla" + spinnerSustitucion.getSelectedItem(), new ArrayList<Integer>());
                     //textSust1.setBackground(Color.GREEN);
                 } else {
                     //textSust1.setBackground(Color.RED);
@@ -1122,6 +1208,19 @@ public class NuevoTeorema extends AppCompatActivity{
                             }else {
                                 //JOptionPane.showMessageDialog(this, "La demostracion se realizo correctamente");
                                 mensaje = "La demostracion se realizo correctamente";
+                                Log.e("Numero pasos","pasos de la demostración 1 fue..."+demostracion1.size());
+                                Log.e("Numero pasos","pasos de la demostración 2 fue..."+demostracion2.size());
+                                Log.e("Numero pasos","La hipótesis 1 fue..."+strHipotesis1);
+                                Log.e("Numero pasos","La hipótesis 2 fue..."+strHipotesis2);
+                                Intent intent=new Intent(NuevoTeorema.this,ConfirmarNombreTeorema.class);
+                                intent.putExtra("Demostracion 1",demostracion1);
+                                intent.putExtra("Demostracion 2",demostracion2);
+                                intent.putExtra("Hip 1",strHipotesis1);
+                                intent.putExtra("Hip 2",strHipotesis2);
+                                intent.putExtra("Terminada","true");
+                                intent.putExtra("EsBicondicional","true");
+                                startActivity(intent);
+
                             }
 
                             //deshabilitarComponentes(0);
@@ -1146,6 +1245,73 @@ public class NuevoTeorema extends AppCompatActivity{
                         }else {
                             //JOptionPane.showMessageDialog(this, "La demostracion se realizo correctamente");
                             mensaje = "La demostracion se realizo correctamente";
+
+                            mSistemaReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    // get total available quest
+                                    Long size = dataSnapshot.getChildrenCount();
+                                    Log.e("Cuantas demostraciones ", size.toString());
+
+                                    AlertDialog.Builder ImageDialog = new AlertDialog.Builder(NuevoTeorema.this);
+                                    ImageView showImage = new ImageView(NuevoTeorema.this);
+                                    ImageDialog.setTitle("¡Logro obtenido!");
+                                    showImage.setImageResource(R.drawable.star);
+                                    ImageDialog.setView(showImage);
+                                    ImageDialog.setPositiveButton("OK", new DialogInterface.OnClickListener()
+                                    {
+                                        public void onClick(DialogInterface arg0, int arg1)
+                                        {
+                                        }
+                                    });
+                                    int logro = 0;
+                                    switch (size.intValue()){
+
+                                        case 0:
+                                            ImageDialog.setMessage("¡Primera demostración!");
+                                            logro = 1;
+                                            break;
+
+                                        case 2:
+                                            ImageDialog.setMessage("¡Tercera demostración!");
+                                            logro = 1;
+                                            break;
+
+                                        case 4:
+                                            ImageDialog.setMessage("¡Quinta demostración!");
+                                            logro = 1;
+                                            break;
+
+                                        case 9:
+                                            ImageDialog.setMessage("¡Décima demostración!");
+                                            logro = 1;
+                                            break;
+
+                                    }
+                                    if(logro == 1){
+                                        final AlertDialog ImageDialogF = ImageDialog.create();
+                                        ImageDialogF.setOnShowListener( new DialogInterface.OnShowListener() {
+                                            @Override
+                                            public void onShow(DialogInterface arg0) {
+                                                ImageDialogF.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(NuevoTeorema.this, R.color.primary_text));
+                                            }
+                                        });
+                                        ImageDialogF.show();
+                                    }
+
+                                }
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+                            Log.e("Numero pasos","pasos de la demostración fue..."+demostracion1.size());
+                            Intent intent=new Intent(NuevoTeorema.this,ConfirmarNombreTeorema.class);
+                            intent.putExtra("Demostracion 1",demostracion1);
+                            intent.putExtra("Terminada","true");
+                            intent.putExtra("EsBicondicional","false");
+                            startActivity(intent);
+
                         }
 
                         //deshabilitarComponentes(0);
@@ -1394,7 +1560,9 @@ public class NuevoTeorema extends AppCompatActivity{
                 textViewJustificacion.setVisibility(View.GONE);
                 textViewSust1.setVisibility(View.GONE);
                 textViewSust2.setVisibility(View.GONE);
-                gvDemostracion.setVisibility(View.GONE);
+                lv.setVisibility(View.GONE);
+                layoutTituloDemos.setVisibility(View.GONE);
+                separador.setVisibility(View.GONE);
 
                 //
                 btnAbrePar.setFocusable(false);
@@ -1492,10 +1660,10 @@ public class NuevoTeorema extends AppCompatActivity{
                 break;
             case 5: //Supuesto
                 spinnerPremisas.setVisibility(View.GONE);
-                spinnerPaso.setEnabled(true);
-                spinnerPaso1.setEnabled(true);
-                spinnerPaso.setVisibility(View.VISIBLE);
-                spinnerPaso1.setVisibility(View.VISIBLE);
+                spinnerPaso.setEnabled(false);
+                spinnerPaso1.setEnabled(false);
+                spinnerPaso.setVisibility(View.GONE);
+                spinnerPaso1.setVisibility(View.GONE);
                 spinnerSustitucion.setVisibility(View.GONE);
                 textExpre.setEnabled(true);
                 textExpre.setVisibility(View.VISIBLE);
@@ -1542,7 +1710,9 @@ public class NuevoTeorema extends AppCompatActivity{
                 spinnerJustificacion.setVisibility(View.VISIBLE);
                 layoutOperadores.setVisibility(View.VISIBLE);
                 //tablaDemostracion.setVisibility(View.VISIBLE);
-                gvDemostracion.setVisibility(View.VISIBLE);
+                lv.setVisibility(View.VISIBLE);
+                layoutTituloDemos.setVisibility(View.VISIBLE);
+                separador.setVisibility(View.VISIBLE);
                 break;
             case 7: //Comenzar Demostracion
                 layoutContenedorHip.setEnabled(false);
@@ -1567,8 +1737,9 @@ public class NuevoTeorema extends AppCompatActivity{
                 spinnerJustificacion.setVisibility(View.GONE);
                 btnValidar.setEnabled(true);
                 layoutOperadores.setVisibility(View.GONE);
-                //tablaDemostracion.setVisibility(View.VISIBLE);
-                gvDemostracion.setVisibility(View.VISIBLE);
+                lv.setVisibility(View.VISIBLE);
+                layoutTituloDemos.setVisibility(View.VISIBLE);
+                separador.setVisibility(View.VISIBLE);
                 btnComprobarDemos.setVisibility(View.VISIBLE);
                 btnCancelarPaso.setVisibility(View.GONE);
                 btnAñadirPaso.setVisibility(View.VISIBLE);
@@ -1590,14 +1761,14 @@ public class NuevoTeorema extends AppCompatActivity{
                 //tablaDemostracion.setModel(modelo1); hacerlo distinto
                 mcr = mcrBC;
                 bicondicionalActual = 1;
-                gvDemostracion.setAdapter(pasos_Grid_Adapter);
+                lv.setAdapter(pasos_List_Adapter);
                 agregarPasos(1);
             }else if(spinnerBicondicional.getSelectedItemPosition()==2){
                 antecedentes = hipotesis2.getAntecedentes();
                 //tablaDemostracion.setModel(modelo2); hacerlo distinto
                 mcr = mcrBC2;
                 bicondicionalActual = 2;
-                gvDemostracion.setAdapter(pasos2_Grid_Adapter);
+                lv.setAdapter(pasos2_List_Adapter);
                 agregarPasos(2);
             }else {
                 bicondicionalActual = 0;
@@ -1667,9 +1838,11 @@ public class NuevoTeorema extends AppCompatActivity{
     private void cargarDemostracionesBicondicional(){
         String demostracion;
         demostracion = "⊢" + antecedentes.get(0)+ "→" + antecedentes.get(1);
+        strHipotesis1=demostracion;
         bicondicionalArray.add("|- " + antecedentes.get(0)+ "→" + antecedentes.get(1));
         hipotesis = new Hipotesis(demostracion);
         demostracion = "⊢" + antecedentes.get(1)+ "→" + antecedentes.get(0);
+        strHipotesis2=demostracion;
         bicondicionalArray.add("|- " + antecedentes.get(1)+ "→" + antecedentes.get(0));
         hipotesis2 = new Hipotesis(demostracion);
     }
@@ -1692,8 +1865,9 @@ public class NuevoTeorema extends AppCompatActivity{
         return views;
     }
 
-    public void agregarFBF(MatrixCursor mcr, String expresion, String justificacion){
+    public void agregarFBF(MatrixCursor mcr, String expresion, String justificacion, ArrayList<Integer> pasosRelacionados){
         //DefaultTableModel model = (DefaultTableModel) tablaDemostracion.getModel();
+
         if(esBicondicional){
             if(bicondicionalActual==1){
                 textExpre.setText("");
@@ -1702,16 +1876,45 @@ public class NuevoTeorema extends AppCompatActivity{
                 pasosGridArray.add(Integer.toString(pasoDemostracion));
                 pasosGridArray.add(expresion);
                 pasosGridArray.add(justificacion);
-                gvDemostracion.setAdapter(pasos_Grid_Adapter);
+
+                Item_paso itemPaso_Aux = new Item_paso("paso" + Integer.toString(pasoDemostracion),
+                        Integer.toString(pasoDemostracion), expresion, justificacion);
+
+                paso_lv_Array.add(itemPaso_Aux);
+                lv.setAdapter(pasos_List_Adapter);
+
                 agregarPasos(1);
+                ArrayList<Paso> paso=new ArrayList<>();
+                paso.add(new Paso(pasoDemostracion,expresion,justificacion));
+                for(Integer i:pasosRelacionados){
+                    paso.add((Paso)(demostracion1.get(i-1)).get(0));
+                }
+                for(Paso p:paso){
+                    System.out.print("El paso es...."+p.getExpresion()+"...\n");
+                }
+                demostracion1.add(paso);
             }else if(bicondicionalActual==2){
                 textExpre.setText("");
                 pasoDemostracion2+=1;
                 mcr.addRow(new Object[]{pasoDemostracion2,expresion , justificacion});
-                pasos2GridArray.add(Integer.toString(pasoDemostracion));
+                pasos2GridArray.add(Integer.toString(pasoDemostracion2));
                 pasos2GridArray.add(expresion);
                 pasos2GridArray.add(justificacion);
-                gvDemostracion.setAdapter(pasos2_Grid_Adapter);
+
+                Item_paso itemPaso_Aux = new Item_paso("paso" + Integer.toString(pasoDemostracion2),
+                        Integer.toString(pasoDemostracion2), expresion, justificacion);
+                paso2_lv_Array.add(itemPaso_Aux);
+                lv.setAdapter(pasos2_List_Adapter);
+
+                ArrayList<Paso> paso=new ArrayList<>();
+                paso.add(new Paso(pasoDemostracion2,expresion,justificacion));
+                for(Integer i:pasosRelacionados){
+                    paso.add((Paso)(demostracion2.get(i-1)).get(0));
+                }
+                for(Paso p:paso){
+                    System.out.print("El paso es...."+p.getExpresion()+"...\n");
+                }
+                demostracion2.add(paso);
                 agregarPasos(2);
             }
         }else {
@@ -1725,19 +1928,38 @@ public class NuevoTeorema extends AppCompatActivity{
             pasosGridArray.add(Integer.toString(pasoDemostracion));
             pasosGridArray.add(expresion);
             pasosGridArray.add(justificacion);
-            gvDemostracion.setAdapter(pasos_Grid_Adapter);
+
+            Item_paso itemPaso_Aux = new Item_paso("paso" + Integer.toString(pasoDemostracion),
+                    Integer.toString(pasoDemostracion), expresion, justificacion);
+            paso_lv_Array.add(itemPaso_Aux);
+            lv.setAdapter(pasos_List_Adapter);
+
             agregarPasos(1);
+            ArrayList<Paso> paso=new ArrayList<>();
+            paso.add(new Paso(pasoDemostracion,expresion,justificacion));
+            for(Integer i:pasosRelacionados){
+                paso.add((Paso)(demostracion1.get(i-1)).get(0));
+            }
+            for(Paso p:paso){
+                System.out.print("El paso es...."+p.getExpresion()+"...\n");
+            }
+            demostracion1.add(paso);
+
         }
 
     }
 
-
-    /*//Ocultar el teclado al dar ATRÁS
     @Override
     public void onBackPressed() {
-        if(customKeyboard!=null && customKeyboard.isCustomKeyboardVisible() ) customKeyboard.hideCustomKeyboard(); else super.onBackPressed();
+        super.onBackPressed();
     }
-    */
+
+    /*//Ocultar el teclado al dar ATRÁS
+        @Override
+        public void onBackPressed() {
+            if(customKeyboard!=null && customKeyboard.isCustomKeyboardVisible() ) customKeyboard.hideCustomKeyboard(); else super.onBackPressed();
+        }
+        */
     //Guardamos algunos estados para cuando se rote la pantalla
     @Override
     protected void onSaveInstanceState (Bundle outState) {

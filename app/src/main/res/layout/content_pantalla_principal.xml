@@ -34,13 +34,15 @@
             android:text="@string/str_crear_teorema"
             android:textAlignment="center"
             android:textColor="@color/secondary_text"
+            tools:textStyle="italic"
             android:textSize="20sp" />
 
         <Button
             android:id="@+id/btn_comenzar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/str_comenzar" />
+            android:text="@string/str_comenzar"
+            tools:textStyle="italic" />
 
         <TextView
             android:id="@+id/text_continuar_teorema"
@@ -50,12 +52,15 @@
             android:text="@string/str_continuar_teorema"
             android:textAlignment="center"
             android:textColor="@color/secondary_text"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            tools:textStyle="italic"/>
 
         <Spinner
             android:id="@+id/spn_continuar_teorema"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            tools:textStyle="italic" />
 
         <TextView
             android:id="@+id/text_revisar_teorema"
@@ -65,12 +70,22 @@
             android:text="@string/str_revisar_teorema"
             android:textAlignment="center"
             android:textColor="@color/secondary_text"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            tools:textStyle="italic"/>
 
         <Spinner
             android:id="@+id/spn_revisar_teorema"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:textAlignment="center"/>
+        <Button
+            android:id="@+id/btn_revisar_teorema"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ver"
+            tools:textStyle="italic" />
+
 
     </LinearLayout>
 

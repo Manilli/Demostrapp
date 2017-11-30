@@ -66,7 +66,7 @@ public class Reglas {
     public String modusPonems(String fbf1, String fbf2){
         String[] fbf;
         String[] arreglo;
-        System.out.println("fbf1 : " + fbf1 + " fbf2: " + fbf2);
+        //System.out.println("fbf1 : " + fbf1 + " fbf2: " + fbf2);
         if(fbf1.contains("→")){
             fbf= fbf1.split("→",2);
             if(fbf2.equals(fbf[0])) return fbf[1];
@@ -121,7 +121,7 @@ public class Reglas {
         }
     }
     
-    public boolean  compararExpresiones(FBF expresion1, FBF expresion2, ArrayList<FBF> rfp){
+    private boolean  compararExpresiones(FBF expresion1, FBF expresion2, ArrayList<FBF> rfp){
         if(compararArboles( rfp.get(0),expresion1)){
             if(compararArboles( rfp.get(1),expresion2)){
                 return true;

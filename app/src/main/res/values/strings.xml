@@ -44,5 +44,14 @@
     <string name="str_comprobarDemos">Comprobar Demostración</string>
     <string name="action_register">Registrarse</string>
     <string name="str_logout">Salir</string>
+    <string name="str_confirmaPassword">Confirmar Password</string>
+    <string name="str_confirmarRegistro">Registrarse</string>
+    <string name="str_informacionRegistro">Ingresa los siguientes campos</string>
+    <string name="str_email">Correo electrónico</string>
+    <string name="str_password">Password</string>
+    <string name="str_dependenciaAcademica">Con qué área de conocimiento está relacionado</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -62,7 +63,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private UserLoginTask mAuthTask = null;
+   // private UserLoginTask mAuthTask = null;
 
     // UI references.
     private FirebaseAuth mAuth;
@@ -81,26 +82,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         setContentView(R.layout.activity_login);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        populateAutoComplete();
+        //populateAutoComplete();
         FirebaseApp.initializeApp(this);
         mAuth = FirebaseAuth.getInstance();
-        mPasswordView = (EditText) findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
-                    return true;
-                }
-                return false;
+        Bundle extras = getIntent().getExtras();
+        if(extras!=null){
+            if(!extras.getString("CuentaCreada").isEmpty()){
+                sendVerificationEmail();
             }
-        });
-
+        }
+        mPasswordView = (EditText) findViewById(R.id.password);
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user!= null) {
+                if (user!= null && user.isEmailVerified()) {
                     Intent intent=new Intent(LoginActivity.this, PantallaPrincipal.class);
                     startActivity(intent);
                 }
@@ -111,15 +107,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public void onClick(View view) {
                 startSignIn();
-
             }
         });
         registerButton=(Button)findViewById(R.id.email_register_button);
         registerButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                crearCuenta();
-
+                Intent intent=new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
             }
         });
         mLoginFormView = findViewById(R.id.login_form);
@@ -130,13 +125,35 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     protected void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
-        FirebaseUser usuarioActual = mAuth.getCurrentUser();
     }
     @Override
     public void onStop() {
         super.onStop();
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }
+    private void checkIfEmailVerified()
+    {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user.isEmailVerified())
+        {
+            // user is verified, so you can finish this activity or send user to activity which you want.
+            //finish();
+            Toast.makeText(LoginActivity.this,"Ingreso exitoso",Toast.LENGTH_SHORT).show();
+            Intent intent=new Intent(LoginActivity.this, PantallaPrincipal.class);
+            startActivity(intent);
+        }
+        else
+        {
+            // email is not verified, so just prompt the message to the user and restart this activity.
+            // NOTE: don't forget to log out the user.
+            FirebaseAuth.getInstance().signOut();
+            Toast.makeText(LoginActivity.this, "No estás verificado", Toast.LENGTH_SHORT).show();
+
+            //restart this activity
+
         }
     }
 
@@ -154,6 +171,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     if(!task.isSuccessful()){
                         Toast.makeText(LoginActivity.this,"Hay un error con el usuario o la contraseña",Toast.LENGTH_SHORT).show();
                     }
+                    else{
+                        checkIfEmailVerified();
+
+                    }
                 }
             });
         }
@@ -166,31 +187,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         getLoaderManager().initLoader(0, null, this);
-    }
-    public void crearCuenta(){
-        String correo=mEmailView.getText().toString();
-        String clave=mPasswordView.getText().toString();
-        if(correo.equals("") || clave.equals("")){
-            Toast.makeText(LoginActivity.this, "Error al crear cuenta, por favor llene todos los campos", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        mAuth.createUserWithEmailAndPassword(correo, clave)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        //Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
-                        Toast.makeText(LoginActivity.this, "¡Registro realizado correctamente!", Toast.LENGTH_SHORT).show();
-
-                        // Si falla el registro, mostrar mensaje al usuario.
-                        // Si es correcto, el listener para el estado de la autenticación será notificado
-                        // y la lógica para manejar el usuario se puede realizar mediante el listener.
-                        if (!task.isSuccessful()) {
-                            Toast.makeText(LoginActivity.this, "Hubo un error al crear la cuenta\n\n" + "Lo sentimos",Toast.LENGTH_SHORT).show();
-                        }
-
-                    }
-                });
     }
     private boolean mayRequestContacts() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
@@ -233,51 +229,39 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    private void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
+    private void sendVerificationEmail()
+    {
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
 
-        // Reset errors.
-        mEmailView.setError(null);
-        mPasswordView.setError(null);
+        user.sendEmailVerification()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            // email sent
 
-        // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
 
-        boolean cancel = false;
-        View focusView = null;
+                            // after email is sent just logout the user and finish this activity
 
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
-            cancel = true;
-        }
+                            Toast.makeText(LoginActivity.this, "Se envió un correo de verificación", Toast.LENGTH_SHORT).show();
+                            mAuth.signOut();
 
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
-            cancel = true;
-        }
 
-        if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
-            focusView.requestFocus();
-        } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
-        }
+
+                        }
+                        else
+                        {
+                            // email not sent, so display message and restart the activity or do whatever you wish to do
+
+                            //restart this activity
+                            Toast.makeText(LoginActivity.this, "No se pudo enviar el correo de verificación", Toast.LENGTH_SHORT).show();
+                            mAuth.signOut();
+
+
+                        }
+                    }
+                });
     }
 
     private boolean isEmailValid(String email) {
@@ -384,6 +368,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
+    /*
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mEmail;
@@ -436,5 +421,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
         }
     }
+    */
 }
 
